@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Nextcloud — Вход</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #f0f4fa 0%, #d9e3ed 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 10% 20%, rgba(0,130,201,0.03) 2%, transparent 2.5%);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .login-container {
+            max-width: 480px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 48px;
+            box-shadow: 0 35px 68px rgba(0, 0, 0, 0.15), 0 8px 18px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            z-index: 2;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .login-header {
+            padding: 2.5rem 2rem 1rem 2rem;
+            text-align: center;
+            background: #ffffff;
+        }
+
+        .logo-icon {
+            background: #0082c9;
+            width: 70px;
+            height: 70px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem auto;
+            box-shadow: 0 15px 25px -10px rgba(0,130,201,0.35);
+        }
+
+        .logo-icon span {
+            font-size: 42px;
+            color: white;
+        }
+
+        .login-header h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            background: linear-gradient(145deg, #1a2c3e, #0082c9);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .login-header p {
+            color: #5f6c7a;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .login-form {
+            padding: 0 2rem 2rem 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8a9bb0;
+            font-size: 22px;
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 16px 16px 52px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            border: 1.5px solid #e2e9f2;
+            border-radius: 44px;
+            background: #ffffff;
+            outline: none;
+            transition: all 0.25s;
+            font-weight: 500;
+            color: #1f2d3d;
+        }
+
+        .input-group input:focus {
+            border-color: #0082c9;
+            box-shadow: 0 0 0 3px rgba(0,130,201,0.2);
+        }
+
+        .input-group input:focus + i {
+            color: #0082c9;
+        }
+
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0 1.8rem 0;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #40566e;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .checkbox-label input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #0082c9;
+        }
+
+        .forgot-link {
+            font-size: 0.85rem;
+            color: #0082c9;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .forgot-link:hover {
+            color: #005a8c;
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: #0082c9;
+            border: none;
+            padding: 16px;
+            border-radius: 56px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 6px 14px rgba(0,130,201,0.3);
+        }
+
+        .login-btn i {
+            font-size: 22px;
+        }
+
+        .login-btn:hover {
+            background: #006ea8;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 22px -8px rgba(0,130,201,0.45);
+        }
+
+        .login-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* Единый стиль для всех сообщений-баннеров */
+        .message-banner {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 28px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .message-banner i {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .message-banner.show-message {
+            display: flex;
+        }
+
+        /* Стиль для сообщений об ошибке (красная тема) */
+        .message-error {
+            background: #fee9e6;
+            border-left: 5px solid #e15c3a;
+            color: #aa3e1c;
+        }
+
+        .message-error i {
+            color: #e15c3a;
+        }
+
+        /* Стиль для успешных сообщений (зелёная тема) - полностью соответствует дизайну, но с зелёным фоном */
+        .message-success {
+            background: #e3f7ec;
+            border-left: 5px solid #2e9b5e;
+            color: #1d7544;
+        }
+
+        .message-success i {
+            color: #2e9b5e;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            margin-right: 6px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 550px) {
+            .login-container {
+                border-radius: 32px;
+            }
+            .login-header {
+                padding: 1.8rem 1.5rem 0.5rem;
+            }
+            .login-form {
+                padding: 0 1.5rem 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="bg-pattern"></div>
+
+<div class="login-container">
+    <div class="login-header">
+        <div class="logo-icon">
+            <span class="material-icons">cloud_queue</span>
+        </div>
+        <h1>Nextcloud</h1>
+        <p>Войдите в свою защищённую среду</p>
+    </div>
+
+    <div class="login-form">
+        <div id="loginMessage" class="message-banner">
+            <i id="messageIcon" class="material-icons">error_outline</i>
+            <span id="messageText"></span>
+        </div>
+
+        <form id="loginForm" action="#" method="POST">
+            <div class="input-group">
+                <i class="material-icons">person_outline</i>
+                <input type="text" id="username" name="username" placeholder="Логин или email" autocomplete="username" required>
+            </div>
+            <div class="input-group">
+                <i class="material-icons">lock_outline</i>
+                <input type="password" id="password" name="password" placeholder="Пароль" autocomplete="current-password" required>
+            </div>
+            <div class="login-options">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="rememberCheckbox"> Запомнить меня
+                </label>
+                <button type="button" id="forgotPasswordBtn" class="forgot-link">Забыли пароль?</button>
+            </div>
+            <button type="submit" id="loginButton" class="login-btn">
+                <span class="material-icons">login</span> 
+                <span id="btnText">Войти</span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const loginForm = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('loginButton');
+    const btnTextSpan = document.getElementById('btnText');
+    const messageBanner = document.getElementById('loginMessage');
+    const messageTextSpan = document.getElementById('messageText');
+    const messageIcon = document.getElementById('messageIcon');
+    const rememberCheck = document.getElementById('rememberCheckbox');
+    const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+
+    function showMessage(message, isError = true) {
+
+        messageTextSpan.innerText = message;
+
+        messageBanner.classList.remove('message-error', 'message-success');
+        
+        if (isError) {
+            messageBanner.classList.add('message-error');
+            messageIcon.innerText = 'error_outline';
+        } else {
+            messageBanner.classList.add('message-success');
+            messageIcon.innerText = 'check_circle';
+        }
+
+        messageBanner.classList.add('show-message');
+
+        setTimeout(() => {
+            messageBanner.classList.remove('show-message');
+        }, 4000);
+    }
+
+    async function performLogin(username, password, remember) {
+        loginBtn.disabled = true;
+        btnTextSpan.innerHTML = '<span class="loading-spinner"></span> Проверка...';
+        
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                const validCombos = [
+                    { user: 'admin', pass: 'admin123' },
+                    { user: 'user', pass: 'nextcloud' },
+                    { user: 'demo@nextcloud.com', pass: 'demo' },
+                    { user: 'alex', pass: 'secure' },
+                    { user: 'Елена', pass: 'cloud2025' }
+                ];
+                const isValid = validCombos.some(combo => combo.user === username && combo.pass === password);
+                const extraValid = (username === 'test' && password === 'nextcloud');
+                const finalValid = isValid || extraValid;
+                
+                resolve(finalValid);
+            }, 1200);
+        });
+    }
+
+    forgotPasswordBtn.addEventListener('click', () => {
+        const enteredLogin = usernameInput.value.trim();
+        
+        if (!enteredLogin) {
+            showMessage('Пожалуйста, сначала введите Ваш логин или email, чтобы восстановить пароль.', true);
+            usernameInput.style.borderColor = '#e15c3a';
+            usernameInput.style.boxShadow = '0 0 0 2px rgba(225,92,58,0.2)';
+            setTimeout(() => {
+                usernameInput.style.borderColor = '';
+                usernameInput.style.boxShadow = '';
+            }, 2000);
+            usernameInput.focus();
+            return;
+        }
+        
+        showMessage(`Инструкция по восстановлению пароля отправлена на email, привязанный к аккаунту ${enteredLogin}`, false);
+    });
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+        const remember = rememberCheck.checked;
+        
+        if (!username || !password) {
+            showMessage('Пожалуйста, заполните и логин, и пароль.', true);
+            loginBtn.disabled = false;
+            btnTextSpan.innerHTML = 'Войти';
+            return;
+        }
+        
+        const success = await performLogin(username, password, remember);
+        
+        if (success) {
+            showMessage(`Добро пожаловать, ${username}! Перенаправление в панель управления...`, false);
+            btnTextSpan.innerHTML = 'Успешно!';
+            loginBtn.disabled = true;
+
+            if (remember) {
+                localStorage.setItem('nc_remember_user', username);
+                localStorage.setItem('nc_remember_flag', 'true');
+            } else {
+                localStorage.removeItem('nc_remember_user');
+                localStorage.removeItem('nc_remember_flag');
+            }
+
+            setTimeout(() => {
+                document.querySelector('.login-container').innerHTML = `
+                    <div style="padding: 2.5rem; text-align: center;">
+                        <div class="logo-icon" style="margin:0 auto 1rem auto; background:#0082c9;">
+                            <span class="material-icons">cloud_done</span>
+                        </div>
+                        <h2 style="font-size: 1.8rem; color:#1f2d3d;">Добро пожаловать!</h2>
+                        <p style="margin: 1rem 0; color:#2c5a74;">Вы успешно вошли как <strong>${escapeHtml(username)}</strong>.</p>
+                        <div style="background:#eef3fc; border-radius: 28px; padding: 1rem; margin: 1rem 0;">
+                            <span class="material-icons" style="vertical-align: middle;">check_circle</span> 
+                            Ваше облако готово к работе.
+                        </div>
+                        <button id="logoutDemoBtn" style="background:#f0f4fa; border:1px solid #cbdae9; padding:12px 24px; border-radius:60px; font-weight:600; cursor:pointer; margin-top: 20px; font-family:Inter;">
+                            Выйти из аккаунта
+                        </button>
+                    </div>
+                `;
+                const logoutBtn = document.getElementById('logoutDemoBtn');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', () => {
+                        location.reload();
+                    });
+                }
+            }, 1800);
+        } else {
+            showMessage('Неверный логин или пароль.', true);
+            loginBtn.disabled = false;
+            btnTextSpan.innerHTML = 'Войти';
+            passwordInput.value = '';
+            passwordInput.focus();
+        }
+    });
+    
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function restoreRememberedUser() {
+        const remembered = localStorage.getItem('nc_remember_user');
+        const flag = localStorage.getItem('nc_remember_flag');
+        if (flag === 'true' && remembered) {
+            usernameInput.value = remembered;
+            rememberCheck.checked = true;
+        } else {
+            rememberCheck.checked = false;
+        }
+    }
+    restoreRememberedUser();
+    
+    const allClickable = document.querySelectorAll('button, .forgot-link, .login-btn');
+    allClickable.forEach(el => {
+        el.addEventListener('mousedown', () => {
+            el.style.transform = 'scale(0.98)';
+            setTimeout(() => { if(el) el.style.transform = ''; }, 130);
+        });
+        el.addEventListener('mouseleave', () => {
+            if(el) el.style.transform = '';
+        });
+    });
+</script>
+</body>
+</html>
